@@ -68,5 +68,8 @@ qrc_*.py
 # YAML
 *.yml
 
+# Windows
+Thumbs.db
+
 !templates/*.xlsx
 
