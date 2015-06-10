@@ -43,14 +43,44 @@ def lergb2rgb(lergb):
     return (r, g, b)
 
 
-def collect_styles(obj):
-    if obj.Type in POINTS_TYPE:
-        return list(_collect_impl(obj.SeriesCollection(1).Points))
+def rgb2lergb(r, g, b):
+    return (
+        (b << 16) |
+        (g << 8) |
+        r
+    )
+
+
+def collect_styles(chart):
+    if chart.ChartType in POINTS_TYPE:
+        return list(_collect_fill(chart.SeriesCollection(1).Points))
     else:
-        return list(_collect_impl(obj.SeriesCollection))
+        return list(_collect_fill(chart.SeriesCollection))
 
 
-def _collect_impl(method):
+def _collect_fill(method):
     for i in com_range(method().Count):
         obj = method(i).Format.Fill
         yield Style.from_com_object(obj)
+
+
+def apply_styles(chart, styles):
+    if chart.ChartType in POINTS_TYPE:
+        _apply_fill(chart.SeriesCollection(1).Points, styles)
+    else:
+        _apply_fill(chart.SeriesCollection, styles)
+
+
+def _apply_fill(method, styles):
+    maximum = min(method().Count, len(styles))
+    for i in com_range(maximum):
+        style = styles[i-1]  # 0-based
+        obj = method(i).Format.Fill
+        if style.isFilled():
+            obj.Solid()
+            obj.ForeColor.RGB = rgb2lergb(*style.fore)
+            #obj.BackColor.RGB = rgb2lergb(0xff, 0xff, 0xff)
+        else:
+            obj.Patterned(style.pattern)
+            obj.ForeColor.RGB = rgb2lergb(*style.fore)
+            obj.BackColor.RGB = rgb2lergb(*style.back)

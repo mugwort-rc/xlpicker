@@ -32,3 +32,8 @@ class MainWindow(QMainWindow):
         self.currentModel.setStyles(
             utils.excel.collect_styles(XL.ActiveChart)
         )
+
+    @pyqtSlot()
+    def on_pushButtonApplyChart_clicked(self):
+        styles = self.currentModel.styles()
+        utils.excel.apply_styles(XL.ActiveChart, styles)

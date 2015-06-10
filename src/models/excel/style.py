@@ -13,7 +13,7 @@ from .. import abstract
 class ChartStyleModel(abstract.AbstractItemModel):
     def __init__(self, parent=None):
         super(ChartStyleModel, self).__init__(parent)
-        self.styles = []
+        self._styles = []
         self.patternImage = QPixmap(":/img/patterns.png")
 
     def setStyles(self, styles):
@@ -21,16 +21,19 @@ class ChartStyleModel(abstract.AbstractItemModel):
         :type styles: list[utils.excel.Style]
         """
         self.beginResetModel()
-        self.styles = styles
-        self.setItemSize(len(self.styles),
+        self._styles = styles
+        self.setItemSize(len(self._styles),
                          # Pattern, Fore, Back
-                         3 if len(self.styles) > 0 else 0)
+                         3 if len(self._styles) > 0 else 0)
         self.endResetModel()
+
+    def styles(self):
+        return self._styles
 
     def data(self, index=QModelIndex(), role=Qt.DisplayRole):
         if role not in [Qt.DisplayRole, Qt.DecorationRole]:
             return QVariant()
-        style = self.styles[index.row()]
+        style = self._styles[index.row()]
         fore = QColor(*style.fore)
         back = QColor(*style.back)
         if role == Qt.DecorationRole:
