@@ -51,29 +51,40 @@ def rgb2lergb(r, g, b):
     )
 
 
-def collect_styles(chart):
+def collect_styles(chart, prog=None):
     if chart.ChartType in POINTS_TYPE:
-        return list(_collect_fill(chart.SeriesCollection(1).Points))
+        return list(_collect_fill(chart.SeriesCollection(1).Points, prog=prog))
     else:
-        return list(_collect_fill(chart.SeriesCollection))
+        return list(_collect_fill(chart.SeriesCollection, prog=prog))
 
 
-def _collect_fill(method):
-    for i in com_range(method().Count):
+def _collect_fill(method, prog=None):
+    maximum = method().Count
+    if prog:
+        prog.initialize(maximum)
+    for i in com_range(maximum):
+        if prog:
+            prog.update(i)
         obj = method(i).Format.Fill
         yield Style.from_com_object(obj)
+    if prog:
+        prog.finish()
 
 
-def apply_styles(chart, styles):
+def apply_styles(chart, styles, prog=None):
     if chart.ChartType in POINTS_TYPE:
-        _apply_fill(chart.SeriesCollection(1).Points, styles)
+        _apply_fill(chart.SeriesCollection(1).Points, styles, prog=prog)
     else:
-        _apply_fill(chart.SeriesCollection, styles)
+        _apply_fill(chart.SeriesCollection, styles, prog=prog)
 
 
-def _apply_fill(method, styles):
+def _apply_fill(method, styles, prog=None):
     maximum = min(method().Count, len(styles))
+    if prog:
+        prog.initialize(maximum)
     for i in com_range(maximum):
+        if prog:
+            prog.update(i)
         style = styles[i-1]  # 0-based
         obj = method(i).Format.Fill
         if style.isFilled():
@@ -83,3 +94,5 @@ def _apply_fill(method, styles):
             obj.Patterned(style.pattern)
             obj.ForeColor.RGB = rgb2lergb(*style.fore)
             obj.BackColor.RGB = rgb2lergb(*style.back)
+    if prog:
+        prog.finish()
