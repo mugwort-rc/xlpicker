@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import QStringListModel
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QFileDialog
@@ -26,6 +27,16 @@ class MainWindow(QMainWindow):
         # model
         self.currentModel = models.ChartStyleModel(self)
         self.ui.treeView.setModel(self.currentModel)
+        self.targetModel = QStringListModel([
+            self.tr("ActiveBook"),
+            self.tr("ActiveSheet"),
+        ], self)
+        self.typeModel = QStringListModel([
+            self.tr("All Chart"),
+            self.tr("Type of ActiveChart"),
+        ], self)
+        self.ui.comboBoxTarget.setModel(self.targetModel)
+        self.ui.comboBoxType.setModel(self.typeModel)
 
         # general_progress
         self.general_progress = QProgressBar()
@@ -64,6 +75,55 @@ class MainWindow(QMainWindow):
         except pythoncom.com_error:
             QMessageBox.warning(self, self.tr("Apply error"),
                 self.tr("Failed applied in the ActiveChart."))
+
+    @pyqtSlot()
+    def on_pushButtonApplyBook_clicked(self):
+        styles = self.currentModel.styles()
+        target_mode = self.ui.comboBoxTarget.currentIndex()
+        target_type = self.ui.comboBoxType.currentIndex()
+        self.general_progress.setValue(0)
+        self.general_progress.setRange(0, 0)
+        self.general_progress.setVisible(True)
+        try:
+            type_filter = None  # default: All Chart
+            if target_type == 1:  # ActiveChart Type
+                if XL.ActiveChart is None:
+                    QMessageBox.information(self, "", self.tr("Please select the Chart."))
+                    return
+                type_filter = XL.ActiveChart.ChartType
+            book = XL.ActiveWorkbook
+            sheets = []
+            # ActiveBook
+            if target_mode == 0:
+                for i in utils.excel.com_range(book.Worksheets.Count):
+                    sheets.append(book.Worksheets(i))
+            # ActiveSheet
+            elif target_mode == 1:
+                sheets = [XL.ActiveSheet]
+            # calc chart count
+            self.on_progress_initialized(len(sheets))
+            charts = []
+            for c, sheet in enumerate(sheets, 1):
+                self.on_progress_updated(c)
+                for i in utils.excel.com_range(sheet.ChartObjects().Count):
+                    chart = sheet.ChartObjects(i).Chart
+                    if type_filter is not None and chart.ChartType != type_filter:
+                        continue
+                    charts.append(chart)
+            self.general_progress.setRange(0, len(charts))
+            for i, chart in enumerate(charts):
+                self.general_progress.setValue(i)
+                try:
+                    utils.excel.apply_styles(chart, styles, prog=self.progObj)
+                except pythoncom.com_error:
+                    chart.Parent.Activate()
+                    QMessageBox.warning(self, self.tr("Apply error"),
+                        self.tr("Failed applied in the ActiveChart."))
+
+        except pythoncom.com_error:
+            QMessageBox.warning(self, self.tr("Apply error"),
+                self.tr("Failed applied."))
+        self.general_progress.setVisible(False)
 
     @pyqtSlot(int)
     def on_progress_initialized(self, maximum):
