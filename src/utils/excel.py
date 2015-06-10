@@ -79,7 +79,6 @@ def _apply_fill(method, styles):
         if style.isFilled():
             obj.Solid()
             obj.ForeColor.RGB = rgb2lergb(*style.fore)
-            #obj.BackColor.RGB = rgb2lergb(0xff, 0xff, 0xff)
         else:
             obj.Patterned(style.pattern)
             obj.ForeColor.RGB = rgb2lergb(*style.fore)

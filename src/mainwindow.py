@@ -2,7 +2,9 @@
 
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QFileDialog
+import pythoncom
 import win32com.client
 
 XL = win32com.client.Dispatch("Excel.Application")
@@ -36,4 +38,8 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_pushButtonApplyChart_clicked(self):
         styles = self.currentModel.styles()
-        utils.excel.apply_styles(XL.ActiveChart, styles)
+        try:
+            utils.excel.apply_styles(XL.ActiveChart, styles)
+        except pythoncom.com_error:
+            QMessageBox.warning(self, self.tr("Apply error"),
+                self.tr("Failed applied in the ActiveChart."))
