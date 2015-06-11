@@ -25,8 +25,10 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         # model
-        self.currentModel = models.ChartStyleModel(self)
-        self.ui.treeView.setModel(self.currentModel)
+        self.pickedModel = models.ChartStyleModel(self)
+        self.pickedDelegate = models.ChartPatternDelegate(self)
+        self.ui.treeView.setModel(self.pickedModel)
+        self.ui.treeView.setItemDelegate(self.pickedDelegate)
         self.targetModel = QStringListModel([
             self.tr("ActiveBook"),
             self.tr("ActiveSheet"),
@@ -62,14 +64,14 @@ class MainWindow(QMainWindow):
         try:
             styles = utils.excel.collect_styles(XL.ActiveChart,
                                                 prog=self.progObj)
-            self.currentModel.setStyles(styles)
+            self.pickedModel.setStyles(styles)
         except pythoncom.com_error:
             QMessageBox.warning(self, self.tr("Collect error"),
                 self.tr("Failed collecting from the ActiveChart."))
 
     @pyqtSlot()
     def on_pushButtonApplyChart_clicked(self):
-        styles = self.currentModel.styles()
+        styles = self.pickedModel.styles()
         try:
             utils.excel.apply_styles(XL.ActiveChart, styles, prog=self.progObj)
         except pythoncom.com_error:
@@ -78,7 +80,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_pushButtonApplyBook_clicked(self):
-        styles = self.currentModel.styles()
+        styles = self.pickedModel.styles()
         target_mode = self.ui.comboBoxTarget.currentIndex()
         target_type = self.ui.comboBoxType.currentIndex()
         self.general_progress.setValue(0)
