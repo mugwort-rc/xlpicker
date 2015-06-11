@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QStringListModel
+from PyQt5.QtCore import QModelIndex
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QFileDialog
@@ -126,6 +130,16 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, self.tr("Apply error"),
                 self.tr("Failed applied."))
         self.general_progress.setVisible(False)
+
+    @pyqtSlot(QModelIndex)
+    def on_treeView_doubleClicked(self, index):
+        if index.column() == 0:
+            return
+        color = index.data(Qt.EditRole)
+        dialog = QColorDialog(self)
+        dialog.setCurrentColor(color)
+        if dialog.exec_() == QDialog.Accepted:
+            self.pickedModel.setData(index, dialog.currentColor())
 
     @pyqtSlot(int)
     def on_progress_initialized(self, maximum):
