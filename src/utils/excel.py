@@ -35,7 +35,7 @@ class Style(object):
         # Format.Fill: None, black, white
         return Style(-2, lergb2rgb(0), lergb2rgb(0xffffff),
         # Border: Auto, Solid, Single, None, Normal
-                      -4105, 1, 1, -2, -4138)
+                      -4105, 1, 1, lergb2rgb(0), -4138)
 
     @staticmethod
     def from_com_object(obj):
@@ -46,7 +46,7 @@ class Style(object):
             obj.Border.LineStyle,
             obj.Format.Line.DashStyle,
             obj.Format.Line.Style,
-            obj.Border.Color,
+            lergb2rgb(obj.Border.Color) if obj.Border.Color >= 0 else lergb2rgb(0),
             obj.Border.Weight,
         )
 
@@ -119,7 +119,7 @@ def _apply_style(method, styles, prog=None):
         obj.Format.Line.DashStyle = style.dash
         obj.Format.Line.Style = style.line
         if style.style not in [-4142, -4105]:  # None, Auto
-            obj.Border.Color = style.color
+            obj.Border.Color = rgb2lergb(*style.color)
             obj.Border.Weight = style.weight
     if prog:
         prog.finish()

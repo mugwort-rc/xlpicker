@@ -3,6 +3,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtCore import QVariant
+from PyQt5.QtCore import QStringListModel
 from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QPainter
@@ -22,7 +23,7 @@ class ChartStyleModel(abstract.AbstractItemModel):
         super(ChartStyleModel, self).__init__(parent)
         self._styles = []
         self.patternImage = QPixmap(":/img/patterns.png")
-        self.setItemSize(0, 3)  # 3: Pattern, Fore, Back
+        self.setItemSize(0, 6)  # 6: Pattern, Fore, Back, LineStyle, Color, Weight
 
     def setStyles(self, styles):
         """
@@ -31,8 +32,8 @@ class ChartStyleModel(abstract.AbstractItemModel):
         self.beginResetModel()
         self._styles = styles
         self.setItemSize(len(self._styles),
-                         # Pattern, Fore, Back
-                         3)
+                         # Pattern, Fore, Back, LineStyle, Color, Weight
+                         6)
         self.endResetModel()
 
     def styles(self):
@@ -40,7 +41,7 @@ class ChartStyleModel(abstract.AbstractItemModel):
 
     def flags(self, index):
         result = super(ChartStyleModel, self).flags(index)
-        if index.column() == 0:
+        if index.column() in [0, 3, 5]:
             return result | Qt.ItemIsEditable
         return result
 
@@ -50,6 +51,7 @@ class ChartStyleModel(abstract.AbstractItemModel):
         style = self._styles[index.row()]
         fore = QColor(*style.fore)
         back = QColor(*style.back)
+        border_color = QColor(*style.color)
         if role == Qt.EditRole:
             if index.column() == 0:
                 if style.isFilled():
@@ -59,6 +61,18 @@ class ChartStyleModel(abstract.AbstractItemModel):
                 return fore
             elif index.column() == 2:
                 return back
+            elif index.column() == 3:
+                if style.style == -4105:
+                    return 0  # Auto special case
+                elif style.style == -4142:
+                    return 9  # None special case
+                return style.dash  # see also MsoLineDashStyle
+            elif index.column() == 4:
+                return border_color
+            elif index.column() == 5:
+                if style.weight == -4138:
+                    return 3  # Medium special case
+                return style.weight  # see also XlBorderWeight
             else:
                 return QVariant()
         elif role == Qt.DecorationRole:
@@ -79,12 +93,40 @@ class ChartStyleModel(abstract.AbstractItemModel):
                 p.drawPixmap(img.rect(), backMask, backMask.rect())
                 p.end()
                 return img
+        elif role == Qt.DisplayRole:
+            # Line style
+            if index.column() == 3:
+                value = self.data(index, role=Qt.EditRole)
+                if value not in range(10):
+                    return self.tr("Unknown")
+                return {
+                    0: self.tr("Auto"),
+                    1: self.tr("Solid"),
+                    2: self.tr("SquareDot"),
+                    3: self.tr("RoundDot"),
+                    4: self.tr("LineDash"),
+                    5: self.tr("DashDot"),
+                    6: self.tr("DashDotDot"),
+                    7: self.tr("LongDash"),
+                    8: self.tr("LongDashDot"),
+                    9: self.tr("None"),
+                }[value]
+            elif index.column() == 5:
+                return {
+                    1: self.tr("Hairline"),
+                    2: self.tr("Thin"),
+                    3: self.tr("Medium"),
+                    4: self.tr("Thick"),
+                }[self.data(index, role=Qt.EditRole)]
         # Fore
         if index.column() == 1:
             return fore
         # Back
         elif index.column() == 2:
             return back
+        # border color
+        elif index.column() == 4:
+            return border_color
         return QVariant()
 
     def setData(self, index, value, role=Qt.EditRole):
@@ -95,6 +137,31 @@ class ChartStyleModel(abstract.AbstractItemModel):
                 self._styles[index.row()].fore = qcolor2rgb(value)
             elif index.column() == 2:
                 self._styles[index.row()].back = qcolor2rgb(value)
+            elif index.column() == 3:
+                if value in [0, 9]:
+                    if value == 0:
+                        self._styles[index.row()].style = -4105
+                    elif vlaue == 9:
+                        self._styles[index.row()].style = -4142
+                    self._styles[index.row()].dash = 1
+                else:
+                    self._styles[index.row()].style = {
+                        1: 1,
+                        2: -4118,
+                        3: -4118,
+                        4: -4115,
+                        5: 4,
+                        6: 5,
+                        7: -4115,
+                        8: 4,
+                    }[value]
+                    self._styles[index.row()].dash = value
+            elif index.column() == 4:
+                self._styles[index.row()].color = qcolor2rgb(value)
+            elif index.column() == 5:
+                if value == 3:
+                    value = -4138
+                self._styles[index.row()].weight = value
             return True
         return False
 
@@ -107,6 +174,13 @@ class ChartStyleModel(abstract.AbstractItemModel):
             return self.tr("Fore")
         elif section == 2:
             return self.tr("Back")
+        elif section == 3:
+            return self.tr("Border")
+        elif section == 4:
+            return self.tr("Border color")
+        elif section == 5:
+            return self.tr("Border weight")
+        return QVariant()
 
     def insertRows(self, row, count, parent=QModelIndex()):
         self.beginInsertRows(parent, row, row+count)
@@ -212,6 +286,25 @@ class ChartPatternDelegate(QItemDelegate):
     def __init__(self, parent=None):
         super(ChartPatternDelegate, self).__init__(parent)
 
+        self.lineStrings = [
+            self.tr("Auto"),
+            self.tr("Solid"),
+            self.tr("SquareDot"),
+            self.tr("RoundDot"),
+            self.tr("LineDash"),
+            self.tr("DashDot"),
+            self.tr("DashDotDot"),
+            self.tr("LongDash"),
+            self.tr("LongDashDot"),
+            self.tr("None"),
+        ]
+        self.weightStrings = [
+            self.tr("Hairline"),
+            self.tr("Thin"),
+            self.tr("Medium"),
+            self.tr("Thick"),
+        ]
+
     def createEditor(self, parent, option, index):
         if index.column() == 0:
             editor = QComboBox(parent)
@@ -223,19 +316,37 @@ class ChartPatternDelegate(QItemDelegate):
             model.fetchMore()
             editor.setModel(model)
             return editor
+        elif index.column() == 3:
+            editor = QComboBox(parent)
+            model = QStringListModel(editor)
+            model.setStringList(self.lineStrings)
+            editor.setModel(model)
+            return editor
+        elif index.column() == 5:
+            editor = QComboBox(parent)
+            model = QStringListModel(editor)
+            model.setStringList(self.weightStrings)
+            editor.setModel(model)
+            return editor
         return super(ChartPatternDelegate, self).createEditor(parent, option, index)
 
     def setEditorData(self, editor, index):
-        pattern = index.model().data(index, Qt.EditRole)
-        if pattern < 1 or pattern > 48:
-            pattern = 0
-        editor.setCurrentIndex(pattern)
+        data = index.model().data(index, Qt.EditRole)
+        if index.column() == 0:
+            if data < 1 or data > 48:
+                data = 0
+        elif index.column() == 5:
+            data -= 1
+        editor.setCurrentIndex(data)
 
     def setModelData(self, editor, model, index):
-        pattern = editor.currentIndex()
-        if pattern == 0:
-            pattern = -2
-        model.setData(index, pattern, Qt.EditRole)
+        value = editor.currentIndex()
+        if index.column() == 0:
+            if value == 0:
+                value = -2
+        elif index.column() == 5:
+            value += 1
+        model.setData(index, value, Qt.EditRole)
 
 
 class PatternImageDelegate(QItemDelegate):

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from PyQt5.QtCore import QT_VERSION_STR
+
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QStringListModel
@@ -33,6 +35,10 @@ class MainWindow(QMainWindow):
         self.pickedDelegate = models.ChartPatternDelegate(self)
         self.ui.treeView.setModel(self.pickedModel)
         self.ui.treeView.setItemDelegate(self.pickedDelegate)
+        if QT_VERSION_STR.startswith("5."):
+            self.ui.treeView.header().setSectionsMovable(False)
+        else:
+            self.ui.treeView.header().setMovable(False)
         self.targetModel = QStringListModel([
             self.tr("ActiveBook"),
             self.tr("ActiveSheet"),
@@ -159,7 +165,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QModelIndex)
     def on_treeView_doubleClicked(self, index):
-        if index.column() == 0:
+        if index.column() not in [1, 2, 4]:
             return
         color = index.data(Qt.EditRole)
         dialog = QColorDialog(self)
