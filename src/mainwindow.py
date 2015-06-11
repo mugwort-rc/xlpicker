@@ -64,6 +64,32 @@ class MainWindow(QMainWindow):
         return QFileDialog.getSaveFileName(self, '', filter)
 
     @pyqtSlot()
+    def on_actionNewStyle_triggered(self):
+        self.pickedModel.insertRow(self.pickedModel.rowCount(), QModelIndex())
+        self.pickedModel.fetchMore()
+
+    @pyqtSlot()
+    def on_actionRemoveStyle_triggered(self):
+        current = self.ui.treeView.currentIndex()
+        if not current.isValid():
+            return
+        self.pickedModel.removeRow(current.row(), QModelIndex())
+
+    @pyqtSlot()
+    def on_actionUpStyle_triggered(self):
+        current = self.ui.treeView.currentIndex()
+        if not current.isValid():
+            return
+        self.pickedModel.upRow(current.row())
+
+    @pyqtSlot()
+    def on_actionDownStyle_triggered(self):
+        current = self.ui.treeView.currentIndex()
+        if not current.isValid():
+            return
+        self.pickedModel.downRow(current.row())
+
+    @pyqtSlot()
     def on_pushButtonPickup_clicked(self):
         try:
             styles = utils.excel.collect_styles(XL.ActiveChart,

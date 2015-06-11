@@ -45,6 +45,16 @@ class FetchObject(object):
         itemsToFetch = self.fetchSize(more)
         self.fetched += itemsToFetch
 
+    def insert(self, at, count):
+        self.size += count
+        if self.fetched > at:
+            self.fetched += count
+
+    def remove(self, at, count):
+        self.size -= count
+        if self.fetched > at:
+            self.fetched -= min(count, self.fetched-at)
+
     @property
     def fetched(self):
         """
@@ -76,6 +86,7 @@ class FetchObject(object):
         self._size = size
         self.fetched = 0
 
+
 class AbstractListModel(QAbstractListModel):
     """
     AbstractListModel
@@ -102,7 +113,7 @@ class AbstractListModel(QAbstractListModel):
         :param parent: parent QObject
         """
         super(AbstractListModel, self).__init__(parent)
-        self.row = None
+        self.row = self.setRowSize(0)
 
     def canFetchMore(self, parent=QModelIndex()):
         """
@@ -111,9 +122,6 @@ class AbstractListModel(QAbstractListModel):
         :rtype: bool
         :return: status of can fetch more
         """
-        # check if source has been set
-        if self.row is None:
-            return False
         return self.row.canFetchMore()
 
     def fetchMore(self, parent=QModelIndex()):
@@ -121,9 +129,6 @@ class AbstractListModel(QAbstractListModel):
         :type parent: QModelIndex
         :param parent: parent index
         """
-        # check if source has been set
-        if self.row is None:
-            return
         itemsToFetch = self.row.fetchSize()
         self.beginInsertRows(QModelIndex(),
                              self.row.fetched,
@@ -147,8 +152,6 @@ class AbstractListModel(QAbstractListModel):
         :rtype: int
         :return: size of items
         """
-        if self.row is None:
-            return 0
         return self.row.fetched
 
     def setRowSize(self, size):
@@ -166,7 +169,7 @@ class AbstractListModel(QAbstractListModel):
         .. note::
            must be call between beginResetModel() and endResetModel()
         """
-        self.row = None
+        self.row = FetchObject(0)
 
 class AbstractTableModel(QAbstractTableModel):
     """
@@ -195,8 +198,8 @@ class AbstractTableModel(QAbstractTableModel):
         :param parent: parent QObject
         """
         super(AbstractTableModel, self).__init__(parent)
-        self.row = None
-        self.column = None
+        self.row = FetchObject(0)
+        self.column = FetchObject(0)
 
     def canFetchMore(self, parent=QModelIndex()):
         """
@@ -205,9 +208,6 @@ class AbstractTableModel(QAbstractTableModel):
         :rtype: bool
         :return: status of can fetch more
         """
-        # check if source has been set
-        if self.row is None or self.column is None:
-            return False
         return self.row.canFetchMore() or self.column.canFetchMore()
 
     def fetchMore(self, parent=QModelIndex()):
@@ -215,9 +215,6 @@ class AbstractTableModel(QAbstractTableModel):
         :type parent: QModelIndex
         :param parent: parent index
         """
-        # check if source has been set
-        if self.row is None or self.column is None:
-            return
         # row side
         if self.row.canFetchMore():
             itemsToFetch = self.row.fetchSize()
@@ -242,8 +239,6 @@ class AbstractTableModel(QAbstractTableModel):
         :rtype: int
         :return: size of column
         """
-        if self.column is None:
-            return 0
         return self.column.fetched
 
     def rowCount(self, parent=QModelIndex()):
@@ -253,8 +248,6 @@ class AbstractTableModel(QAbstractTableModel):
         :rtype: int
         :return: size of row
         """
-        if self.row is None:
-            return 0
         return self.row.fetched
 
     def realColumnCount(self, parent=QModelIndex()):
@@ -264,8 +257,6 @@ class AbstractTableModel(QAbstractTableModel):
         :rtype: int
         :return: size of maximum column
         """
-        if self.column is None:
-            return 0
         return self.column.size
 
     def realRowCount(self, parent=QModelIndex()):
@@ -275,8 +266,6 @@ class AbstractTableModel(QAbstractTableModel):
         :rtype: int
         :return: size of maximum row
         """
-        if self.row is None:
-            return 0
         return self.row.size
 
     def setTableSize(self, row, column):
@@ -296,8 +285,8 @@ class AbstractTableModel(QAbstractTableModel):
         .. note::
            must be call between beginResetModel() and endResetModel()
         """
-        self.row = None
-        self.column = None
+        self.row = FetchObject(0)
+        self.column = FetchObject(0)
 
 class AbstractItemModel(QAbstractItemModel):
     """
@@ -326,8 +315,8 @@ class AbstractItemModel(QAbstractItemModel):
         :param parent: parent QObject
         """
         super(AbstractItemModel, self).__init__(parent)
-        self.row = None
-        self.column = None
+        self.row = FetchObject(0)
+        self.column = FetchObject(0)
 
     def canFetchMore(self, parent=QModelIndex()):
         """
@@ -336,9 +325,6 @@ class AbstractItemModel(QAbstractItemModel):
         :rtype: bool
         :return: status of can fetch more
         """
-        # check if source has been set
-        if self.row is None or self.column is None:
-            return False
         return self.row.canFetchMore() or self.column.canFetchMore()
 
     def fetchMore(self, parent=QModelIndex()):
@@ -346,9 +332,6 @@ class AbstractItemModel(QAbstractItemModel):
         :type parent: QModelIndex
         :param parent: parent index
         """
-        # check if source has been set
-        if self.row is None or self.column is None:
-            return
         # row side
         if self.row.canFetchMore():
             itemsToFetch = self.row.fetchSize()
@@ -378,8 +361,6 @@ class AbstractItemModel(QAbstractItemModel):
         :rtype: int
         :return: size of column
         """
-        if self.column is None:
-            return 0
         return self.column.fetched
 
     def rowCount(self, parent=QModelIndex()):
@@ -389,8 +370,6 @@ class AbstractItemModel(QAbstractItemModel):
         :rtype: int
         :return: size of row
         """
-        if self.row is None:
-            return 0
         return self.row.fetched
 
     def realColumnCount(self, parent=QModelIndex()):
@@ -400,8 +379,6 @@ class AbstractItemModel(QAbstractItemModel):
         :rtype: int
         :return: size of maximum column
         """
-        if self.column is None:
-            return 0
         return self.column.size
 
     def realRowCount(self, parent=QModelIndex()):
@@ -411,8 +388,6 @@ class AbstractItemModel(QAbstractItemModel):
         :rtype: int
         :return: size of maximum row
         """
-        if self.row is None:
-            return 0
         return self.row.size
 
     def setItemSize(self, row, column):
@@ -432,8 +407,8 @@ class AbstractItemModel(QAbstractItemModel):
         .. note::
            must be call between beginResetModel() and endResetModel()
         """
-        self.row = None
-        self.column = None
+        self.row = FetchObject(0)
+        self.column = FetchObject(0)
 
 __all__ = [
     "AbstractListModel", "AbstractTableModel", "AbstractItemModel",

@@ -21,7 +21,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QTreeView" name="treeView"/>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayoutMenu">
         <item>
          <widget class="QGroupBox" name="groupBox">
@@ -104,8 +104,38 @@
      <height>24</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuStyles">
+    <property name="title">
+     <string>&amp;Styles</string>
+    </property>
+    <addaction name="actionNewStyle"/>
+    <addaction name="actionUpStyle"/>
+    <addaction name="actionDownStyle"/>
+    <addaction name="actionRemoveStyle"/>
+   </widget>
+   <addaction name="menuStyles"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNewStyle">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionUpStyle">
+   <property name="text">
+    <string>Up</string>
+   </property>
+  </action>
+  <action name="actionDownStyle">
+   <property name="text">
+    <string>Down</string>
+   </property>
+  </action>
+  <action name="actionRemoveStyle">
+   <property name="text">
+    <string>Remove</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../resource.qrc"/>

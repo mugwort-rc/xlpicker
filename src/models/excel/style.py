@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QItemDelegate
 
 from .. import abstract
+from utils.excel import Style
 
 
 def qcolor2rgb(color):
@@ -21,6 +22,7 @@ class ChartStyleModel(abstract.AbstractItemModel):
         super(ChartStyleModel, self).__init__(parent)
         self._styles = []
         self.patternImage = QPixmap(":/img/patterns.png")
+        self.setItemSize(0, 3)  # 3: Pattern, Fore, Back
 
     def setStyles(self, styles):
         """
@@ -30,7 +32,7 @@ class ChartStyleModel(abstract.AbstractItemModel):
         self._styles = styles
         self.setItemSize(len(self._styles),
                          # Pattern, Fore, Back
-                         3 if len(self._styles) > 0 else 0)
+                         3)
         self.endResetModel()
 
     def styles(self):
@@ -105,6 +107,44 @@ class ChartStyleModel(abstract.AbstractItemModel):
             return self.tr("Fore")
         elif section == 2:
             return self.tr("Back")
+
+    def insertRows(self, row, count, parent=QModelIndex()):
+        self.beginInsertRows(parent, row, row+count)
+        for i in range(count):
+            style = Style.create()
+            if row == len(self._styles):
+                self._styles.append(style)
+            else:
+                self._styles.insert(row+i, style)
+        self.row.insert(row, count)
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, row, count, parent=QModelIndex()):
+        self.beginRemoveRows(parent, row, row+count)
+        for i in range(count):
+            if len(self._styles) <= row:
+                return False
+            del self._styles[row]
+        self.row.remove(row, count)
+        self.endRemoveRows()
+        return True
+
+    def upRow(self, row):
+        if row < 1:
+            return
+        if len(self._styles) <= row:
+            return
+        self.beginMoveRows(QModelIndex(), row, row, QModelIndex(), row-1)
+        self._styles.insert(row-1, self._styles.pop(row))
+        self.endMoveRows()
+
+    def downRow(self, row):
+        if row < 0:
+            return
+        if len(self._styles) <= row+1:
+            return
+        self.upRow(row+1)
 
     def parent(self, index):
         return QModelIndex()

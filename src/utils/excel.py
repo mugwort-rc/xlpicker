@@ -24,6 +24,10 @@ class Style(object):
         return self.pattern <= 0 or self.pattern > 48
 
     @staticmethod
+    def create():
+        return Style(-1, lergb2rgb(0), lergb2rgb(0xffffff))
+
+    @staticmethod
     def from_com_object(obj):
         return Style(
             obj.Pattern,
