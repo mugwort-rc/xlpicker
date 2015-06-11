@@ -15,13 +15,14 @@ POINTS_TYPE = [
 ]
 
 class Style(object):
-    def __init__(self, pattern, fore, back, style, color, weight):
+    def __init__(self, pattern, fore, back, style, dash, color, weight):
         # format.fill
         self.pattern = pattern
         self.fore = fore
         self.back = back
         # border
         self.style = style
+        self.dash = dash
         self.color = color
         self.weight = weight
 
@@ -32,8 +33,8 @@ class Style(object):
     def create():
         # Format.Fill: None, black, white
         return Style(-2, lergb2rgb(0), lergb2rgb(0xffffff),
-        # Border: Auto, None, None
-                      -4105, -2, -4142)
+        # Border: Auto, Solid, None, None
+                      -4105, 1, -2, -4142)
 
     @staticmethod
     def from_com_object(obj):
@@ -42,6 +43,7 @@ class Style(object):
             lergb2rgb(obj.Format.Fill.ForeColor.RGB),
             lergb2rgb(obj.Format.Fill.BackColor.RGB),
             obj.Border.LineStyle,
+            obj.Format.Line.DashStyle,
             obj.Border.Color,
             obj.Border.Weight,
         )
@@ -112,7 +114,8 @@ def _apply_style(method, styles, prog=None):
             obj.Format.Fill.BackColor.RGB = rgb2lergb(*style.back)
         # Border
         obj.Border.LineStyle = style.style
-        if style.style not in [-4142, -4105]:
+        obj.Format.Line.DashStyle = style.dash
+        if style.style not in [-4142, -4105]:  # None, Auto
             obj.Border.Color = style.color
             obj.Border.Weight = style.weight
     if prog:
