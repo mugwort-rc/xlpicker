@@ -69,6 +69,12 @@ class MainWindow(QMainWindow):
     def getSaveFileName(self, filter=''):
         return QFileDialog.getSaveFileName(self, '', filter)
 
+    def getActiveChart(self):
+        if XL.ActiveChart is None:
+            QMessageBox.warning(self, self.tr("Error"), self.tr("Chart is not active currently."))
+            return None
+        return XL.ActiveChart
+
     @pyqtSlot()
     def on_actionNewStyle_triggered(self):
         self.pickedModel.insertRow(self.pickedModel.rowCount(), QModelIndex())
@@ -98,7 +104,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_pushButtonPickup_clicked(self):
         try:
-            styles = utils.excel.collect_styles(XL.ActiveChart,
+            chart = self.getActiveChart()
+            if chart is None:
+                return
+            styles = utils.excel.collect_styles(chart,
                                                 prog=self.progObj)
             self.pickedModel.setStyles(styles)
         except pythoncom.com_error:
@@ -109,7 +118,10 @@ class MainWindow(QMainWindow):
     def on_pushButtonApplyChart_clicked(self):
         styles = self.pickedModel.styles()
         try:
-            utils.excel.apply_styles(XL.ActiveChart, styles, prog=self.progObj)
+            chart = self.getActiveChart()
+            if chart is None:
+                return
+            utils.excel.apply_styles(chart, styles, prog=self.progObj)
         except pythoncom.com_error:
             QMessageBox.warning(self, self.tr("Apply error"),
                 self.tr("Failed applied in the ActiveChart."))
@@ -125,10 +137,10 @@ class MainWindow(QMainWindow):
         try:
             type_filter = None  # default: All Chart
             if target_type == 1:  # ActiveChart Type
-                if XL.ActiveChart is None:
-                    QMessageBox.information(self, "", self.tr("Please select the Chart."))
+                chart = self.getActiveChart()
+                if chart is None:
                     return
-                type_filter = XL.ActiveChart.ChartType
+                type_filter = chart.ChartType
             book = XL.ActiveWorkbook
             sheets = []
             # ActiveBook
