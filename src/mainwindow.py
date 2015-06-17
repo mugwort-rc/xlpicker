@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import QT_VERSION_STR
+from PyQt4.QtCore import QT_VERSION_STR
 
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QStringListModel
-from PyQt5.QtCore import QModelIndex
-from PyQt5.QtWidgets import QColorDialog
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtWidgets import QProgressBar
+from PyQt4.QtCore import pyqtSlot
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QStringListModel
+from PyQt4.QtCore import QModelIndex
+from PyQt4.QtGui import QColorDialog
+from PyQt4.QtGui import QDialog
+from PyQt4.QtGui import QMainWindow
+from PyQt4.QtGui import QMessageBox
+from PyQt4.QtGui import QFileDialog
+from PyQt4.QtGui import QProgressBar
 import pythoncom
 import win32com.client
 

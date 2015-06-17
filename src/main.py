@@ -1,14 +1,14 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
 
-from PyQt5 import QtWidgets
+from PyQt4 import QtGui
 
 from mainwindow import MainWindow
 
 def main(argv):
-    app = QtWidgets.QApplication(argv)
+    app = QtGui.QApplication(argv)
 
     win = MainWindow()
     win.show()

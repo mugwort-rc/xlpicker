@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QModelIndex
-from PyQt5.QtCore import QVariant
-from PyQt5.QtCore import QStringListModel
-from PyQt5.QtGui import QColor
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtGui import QPainter
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QItemDelegate
+from PyQt4.QtCore import Qt
+from PyQt4.QtCore import QModelIndex
+from PyQt4.QtCore import QVariant
+from PyQt4.QtGui import QStringListModel
+from PyQt4.QtGui import QColor
+from PyQt4.QtGui import QPixmap
+from PyQt4.QtGui import QPainter
+from PyQt4.QtGui import QComboBox
+from PyQt4.QtGui import QItemDelegate
 
 from .. import abstract
 from utils.excel import Style
