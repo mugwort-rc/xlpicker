@@ -6,6 +6,7 @@ from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QStringListModel
 from PyQt4.QtCore import QModelIndex
+from PyQt4.QtGui import QColor
 from PyQt4.QtGui import QColorDialog
 from PyQt4.QtGui import QDialog
 from PyQt4.QtGui import QMainWindow
@@ -179,7 +180,7 @@ class MainWindow(QMainWindow):
     def on_treeView_doubleClicked(self, index):
         if index.column() not in [1, 2, 4]:
             return
-        color = index.data(Qt.EditRole)
+        color = QColor(index.data(Qt.EditRole))
         dialog = QColorDialog(self)
         dialog.setCurrentColor(color)
         if dialog.exec_() == QDialog.Accepted:

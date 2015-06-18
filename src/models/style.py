@@ -10,8 +10,8 @@ from PyQt4.QtGui import QPainter
 from PyQt4.QtGui import QComboBox
 from PyQt4.QtGui import QItemDelegate
 
-from .. import abstract
-from utils.excel import Style
+from . import abstract
+from ..utils.excel import Style
 
 
 def qcolor2rgb(color):
@@ -351,10 +351,10 @@ class ChartPatternDelegate(QItemDelegate):
 
 class PatternImageDelegate(QItemDelegate):
     def paint(self, painter, option, index):
-        pixmap = index.data(Qt.DecorationRole)
+        pixmap = QPixmap(index.data(Qt.DecorationRole))
         painter.drawPixmap(option.rect, pixmap)
         super(PatternImageDelegate, self).paint(painter, option, index)
 
     def sizeHint(self, option, index):
-        pixmap = index.data(Qt.DecorationRole)
+        pixmap = QPixmap(index.data(Qt.DecorationRole))
         return pixmap.size()

@@ -58,7 +58,7 @@ target/
 
 # PyQt
 ui_*.py
-qrc_*.py
+*_rc.py
 
 # IPython notebooks
 .ipynb_checkpoints/

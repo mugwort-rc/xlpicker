@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="/">
     <file>img/patterns.png</file>
+    <file>i18n/qt_ja.qm</file>
+    <file>i18n/xlpicker_ja.qm</file>
   </qresource>
 </RCC>

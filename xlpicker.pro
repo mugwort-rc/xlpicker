@@ -1,5 +1,5 @@
 SOURCES = \
-  src/main.py \
+  main.py \
   src/mainwindow.py \
   src/models/abstract.py \
   src/models/excel/style.py \
