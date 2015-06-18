@@ -212,7 +212,7 @@
     <message>
         <location filename="src/mainwindow.py" line="42"/>
         <source>ActiveBook</source>
-        <translation>現在のブック</translation>
+        <translation>現在のシート＆ブック</translation>
     </message>
     <message>
         <location filename="src/ui/mainwindow.ui" line="109"/>
