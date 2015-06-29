@@ -162,14 +162,20 @@ class MainWindow(QMainWindow):
                         continue
                     charts.append(chart)
             self.general_progress.setRange(0, len(charts))
+            aborted = False
             for i, chart in enumerate(charts):
+                if aborted:
+                    break
                 self.general_progress.setValue(i)
                 try:
                     utils.excel.apply_styles(chart, styles, prog=self.progObj)
                 except pythoncom.com_error:
                     chart.Parent.Activate()
-                    QMessageBox.warning(self, self.tr("Apply error"),
-                        self.tr("Failed applied in the ActiveChart."))
+                    buttons = QMessageBox.Ok | QMessageBox.Abort
+                    ret = QMessageBox.warning(self, self.tr("Apply error"),
+                        self.tr("Failed applied in the ActiveChart."), buttons)
+                    if ret == QMessageBox.Abort:
+                        aborted = True
 
         except pythoncom.com_error:
             QMessageBox.warning(self, self.tr("Apply error"),
