@@ -116,9 +116,9 @@ def _apply_style(method, styles, prog=None):
             obj.Format.Fill.BackColor.RGB = rgb2lergb(*style.back)
         # Border
         obj.Border.LineStyle = style.style
-        obj.Format.Line.DashStyle = style.dash
-        obj.Format.Line.Style = style.line
         if style.style not in [-4142, -4105]:  # None, Auto
+            obj.Format.Line.DashStyle = style.dash
+            obj.Format.Line.Style = style.line
             obj.Border.Color = rgb2lergb(*style.color)
             obj.Border.Weight = style.weight
     if prog:
