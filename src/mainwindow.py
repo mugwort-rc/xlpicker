@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 from PyQt4.QtCore import QT_VERSION_STR
 
 from PyQt4.QtCore import pyqtSlot
@@ -16,8 +18,6 @@ from PyQt4.QtGui import QProgressBar
 import pythoncom
 import win32com.client
 
-XL = win32com.client.Dispatch("Excel.Application")
-
 import models
 import utils.excel
 from utils.progress import QtProgressObject
@@ -30,6 +30,12 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        try:
+            self.XL = win32com.client.Dispatch("Excel.Application")
+        except pythoncom.com_error:
+            QMessageBox.warning(self, self.tr("Error"), self.tr("Excel isn't installed."))
+            sys.exit(0)
 
         # model
         self.pickedModel = models.ChartStyleModel(self)
@@ -73,7 +79,7 @@ class MainWindow(QMainWindow):
     def getActiveChart(self):
         ActiveChart = None
         try:
-            ActiveChart = XL.ActiveChart
+            ActiveChart = self.XL.ActiveChart
         except AttributeError:
             pass
         if ActiveChart is None:
@@ -147,7 +153,7 @@ class MainWindow(QMainWindow):
                 if chart is None:
                     return
                 type_filter = chart.ChartType
-            book = XL.ActiveWorkbook
+            book = self.XL.ActiveWorkbook
             sheets = []
             # ActiveBook
             if target_mode == 0:
@@ -155,7 +161,7 @@ class MainWindow(QMainWindow):
                     sheets.append(book.Worksheets(i))
             # ActiveSheet
             elif target_mode == 1:
-                sheets = [XL.ActiveSheet]
+                sheets = [self.XL.ActiveSheet]
             # calc chart count
             self.on_progress_initialized(len(sheets))
             charts = []
