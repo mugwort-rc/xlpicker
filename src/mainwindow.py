@@ -71,10 +71,15 @@ class MainWindow(QMainWindow):
         return QFileDialog.getSaveFileName(self, '', filter)
 
     def getActiveChart(self):
-        if XL.ActiveChart is None:
+        ActiveChart = None
+        try:
+            ActiveChart = XL.ActiveChart
+        except AttributeError:
+            pass
+        if ActiveChart is None:
             QMessageBox.warning(self, self.tr("Error"), self.tr("Chart is not active currently."))
             return None
-        return XL.ActiveChart
+        return ActiveChart
 
     @pyqtSlot()
     def on_actionNewStyle_triggered(self):
