@@ -154,6 +154,8 @@ class MainWindow(QMainWindow):
                     return
                 type_filter = chart.ChartType
             book = self.XL.ActiveWorkbook
+            if book is None:
+                raise pythoncom.com_error
             sheets = []
             # ActiveBook
             if target_mode == 0:
