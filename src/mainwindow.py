@@ -114,6 +114,13 @@ class MainWindow(QMainWindow):
         self.pickedModel.downRow(current.row())
 
     @pyqtSlot()
+    def on_actionReplicate_triggered(self):
+        current = self.ui.treeView.currentIndex()
+        if not current.isValid():
+            return
+        self.pickedModel.replicate(current.row())
+
+    @pyqtSlot()
     def on_pushButtonPickup_clicked(self):
         try:
             chart = self.getActiveChart()

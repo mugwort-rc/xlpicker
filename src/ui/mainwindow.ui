@@ -112,6 +112,7 @@
     <addaction name="actionUpStyle"/>
     <addaction name="actionDownStyle"/>
     <addaction name="actionRemoveStyle"/>
+    <addaction name="actionReplicate"/>
    </widget>
    <addaction name="menuStyles"/>
   </widget>
@@ -134,6 +135,11 @@
   <action name="actionRemoveStyle">
    <property name="text">
     <string>Remove</string>
+   </property>
+  </action>
+  <action name="actionReplicate">
+   <property name="text">
+    <string>Replicate</string>
    </property>
   </action>
  </widget>

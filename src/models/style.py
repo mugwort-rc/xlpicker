@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import copy
+
 from PyQt4.QtCore import Qt
 from PyQt4.QtCore import QModelIndex
 from PyQt4.QtCore import QVariant
@@ -38,6 +40,11 @@ class ChartStyleModel(abstract.AbstractItemModel):
 
     def styles(self):
         return self._styles
+
+    def replicate(self, index):
+        newobj = copy.deepcopy(self._styles[index])
+        self._styles.append(newobj)
+        self.setStyles(self._styles)
 
     def flags(self, index):
         result = super(ChartStyleModel, self).flags(index)
@@ -132,12 +139,20 @@ class ChartStyleModel(abstract.AbstractItemModel):
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
             if index.column() == 0:
+                if isinstance(value, QVariant):
+                    value = value.toInt()[0]
                 self._styles[index.row()].pattern = value
             elif index.column() == 1:
+                if isinstance(value, QVariant):
+                    value = QColor(value)
                 self._styles[index.row()].fore = qcolor2rgb(value)
             elif index.column() == 2:
+                if isinstance(value, QVariant):
+                    value = QColor(value)
                 self._styles[index.row()].back = qcolor2rgb(value)
             elif index.column() == 3:
+                if isinstance(value, QVariant):
+                    value = value.toInt()[0]
                 if value in [0, 9]:
                     if value == 0:
                         self._styles[index.row()].style = -4105
@@ -157,8 +172,12 @@ class ChartStyleModel(abstract.AbstractItemModel):
                     }[value]
                     self._styles[index.row()].dash = value
             elif index.column() == 4:
+                if isinstance(value, QVariant):
+                    value = QColor(value)
                 self._styles[index.row()].color = qcolor2rgb(value)
             elif index.column() == 5:
+                if isinstance(value, QVariant):
+                    value = value.toInt()[0]
                 if value == 3:
                     value = -4138
                 self._styles[index.row()].weight = value
