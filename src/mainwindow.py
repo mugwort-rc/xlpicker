@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import json
 
 from PyQt4.QtCore import QT_VERSION_STR
 
@@ -18,6 +19,8 @@ from PyQt4.QtGui import QProgressBar
 import pythoncom
 import win32com.client
 
+import six
+
 import models
 import utils.excel
 from utils.progress import QtProgressObject
@@ -30,6 +33,9 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # constants
+        self.chartPatternFilter = self.tr("ChartPattern (*.chartpattern)")
 
         try:
             self.XL = win32com.client.Dispatch("Excel.Application")
@@ -71,10 +77,10 @@ class MainWindow(QMainWindow):
         self.progObj.finished.connect(self.on_progress_finished)
 
     def getOpenFileName(self, filter=''):
-        return QFileDialog.getOpenFileName(self, '', filter)
+        return QFileDialog.getOpenFileName(self, "", "", filter)
 
     def getSaveFileName(self, filter=''):
-        return QFileDialog.getSaveFileName(self, '', filter)
+        return QFileDialog.getSaveFileName(self, "", "", filter)
 
     def getActiveChart(self):
         ActiveChart = None
@@ -119,6 +125,27 @@ class MainWindow(QMainWindow):
         if not current.isValid():
             return
         self.pickedModel.replicate(current.row())
+
+    @pyqtSlot()
+    def on_actionLoad_triggered(self):
+        filename = self.getOpenFileName(self.chartPatternFilter)
+        if not filename:
+            return
+        try:
+            data = json.load(open(six.text_type(filename)))
+            self.pickedModel.setDumpData(data)
+        except:
+            QMessageBox.warning(self, self.tr("Load error"),
+                self.tr("Failed to load the chart pattern."))
+
+    @pyqtSlot()
+    def on_actionSave_triggered(self):
+        filename = self.getSaveFileName(self.chartPatternFilter)
+        if not filename:
+            return
+        data = self.pickedModel.dump()
+        fp = open(six.text_type(filename), "wb")
+        json.dump(data, fp, indent=1)
 
     @pyqtSlot()
     def on_pushButtonPickup_clicked(self):

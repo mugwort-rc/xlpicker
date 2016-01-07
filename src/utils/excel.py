@@ -30,6 +30,23 @@ class Style(object):
     def isFilled(self):
         return self.pattern <= 0 or self.pattern > 48
 
+    def copy(self):
+        ret = Style(self.pattern, self.fore, self.back,
+                    self.style, self.dash, self.line, self.color, self.weight)
+        return ret
+
+    def dump(self):
+        return {
+            "pattern": self.pattern,
+            "fore": rgb2lergb(*self.fore),
+            "back": rgb2lergb(*self.back),
+            "style": self.style,
+            "dash": self.dash,
+            "line": self.line,
+            "color": rgb2lergb(*self.color),
+            "weight": self.weight,
+        }
+
     @staticmethod
     def create():
         # Format.Fill: None, black, white
@@ -49,6 +66,11 @@ class Style(object):
             lergb2rgb(obj.Border.Color) if obj.Border.Color >= 0 else lergb2rgb(0),
             obj.Border.Weight,
         )
+
+    @staticmethod
+    def from_dump(data):
+        return Style(data["pattern"], lergb2rgb(data["fore"]), lergb2rgb(data["back"]),
+                        data["style"], data["dash"], data["line"], lergb2rgb(data["color"]), data["weight"])
 
 
 def com_range(n):

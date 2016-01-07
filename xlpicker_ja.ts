@@ -3,72 +3,72 @@
 <context>
     <name>ChartPatternDelegate</name>
     <message>
-        <location filename="src/models/style.py" line="309"/>
+        <location filename="src/models/style.py" line="319"/>
         <source>Auto</source>
         <translation>自動</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="310"/>
+        <location filename="src/models/style.py" line="320"/>
         <source>Solid</source>
         <translation>実線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="311"/>
+        <location filename="src/models/style.py" line="321"/>
         <source>SquareDot</source>
         <translation>点線 (角)</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="312"/>
+        <location filename="src/models/style.py" line="322"/>
         <source>RoundDot</source>
         <translation>点線 (丸)</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="313"/>
+        <location filename="src/models/style.py" line="323"/>
         <source>LineDash</source>
         <translation>破線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="314"/>
+        <location filename="src/models/style.py" line="324"/>
         <source>DashDot</source>
         <translation>一点鎖線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="315"/>
+        <location filename="src/models/style.py" line="325"/>
         <source>DashDotDot</source>
         <translation>二点鎖線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="316"/>
+        <location filename="src/models/style.py" line="326"/>
         <source>LongDash</source>
         <translation>長破線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="317"/>
+        <location filename="src/models/style.py" line="327"/>
         <source>LongDashDot</source>
         <translation>長鎖線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="318"/>
+        <location filename="src/models/style.py" line="328"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="321"/>
+        <location filename="src/models/style.py" line="331"/>
         <source>Hairline</source>
         <translation>最細</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="322"/>
+        <location filename="src/models/style.py" line="332"/>
         <source>Thin</source>
         <translation>細</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="323"/>
+        <location filename="src/models/style.py" line="333"/>
         <source>Medium</source>
         <translation>普通</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="324"/>
+        <location filename="src/models/style.py" line="334"/>
         <source>Thick</source>
         <translation>太線</translation>
     </message>
@@ -76,107 +76,107 @@
 <context>
     <name>ChartStyleModel</name>
     <message>
-        <location filename="src/models/style.py" line="108"/>
+        <location filename="src/models/style.py" line="118"/>
         <source>Unknown</source>
         <translation>不明</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="110"/>
+        <location filename="src/models/style.py" line="120"/>
         <source>Auto</source>
         <translation>自動</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="111"/>
+        <location filename="src/models/style.py" line="121"/>
         <source>Solid</source>
         <translation>実線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="112"/>
+        <location filename="src/models/style.py" line="122"/>
         <source>SquareDot</source>
         <translation>点線 (角)</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="113"/>
+        <location filename="src/models/style.py" line="123"/>
         <source>RoundDot</source>
         <translation>点線 (丸)</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="114"/>
+        <location filename="src/models/style.py" line="124"/>
         <source>LineDash</source>
         <translation>破線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="115"/>
+        <location filename="src/models/style.py" line="125"/>
         <source>DashDot</source>
         <translation>一点鎖線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="116"/>
+        <location filename="src/models/style.py" line="126"/>
         <source>DashDotDot</source>
         <translation>二点鎖線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="117"/>
+        <location filename="src/models/style.py" line="127"/>
         <source>LongDash</source>
         <translation>長破線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="118"/>
+        <location filename="src/models/style.py" line="128"/>
         <source>LongDashDot</source>
         <translation>長鎖線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="119"/>
+        <location filename="src/models/style.py" line="129"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="123"/>
+        <location filename="src/models/style.py" line="133"/>
         <source>Hairline</source>
         <translation>最細</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="124"/>
+        <location filename="src/models/style.py" line="134"/>
         <source>Thin</source>
         <translation>細</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="125"/>
+        <location filename="src/models/style.py" line="135"/>
         <source>Medium</source>
         <translation>普通</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="126"/>
+        <location filename="src/models/style.py" line="136"/>
         <source>Thick</source>
         <translation>太線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="191"/>
+        <location filename="src/models/style.py" line="201"/>
         <source>Pattern</source>
         <translation>パターン</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="193"/>
+        <location filename="src/models/style.py" line="203"/>
         <source>Fore</source>
         <translation>前景色</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="195"/>
+        <location filename="src/models/style.py" line="205"/>
         <source>Back</source>
         <translation>背景色</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="197"/>
+        <location filename="src/models/style.py" line="207"/>
         <source>Border</source>
         <translation>線</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="199"/>
+        <location filename="src/models/style.py" line="209"/>
         <source>Border color</source>
         <translation>線色</translation>
     </message>
     <message>
-        <location filename="src/models/style.py" line="201"/>
+        <location filename="src/models/style.py" line="211"/>
         <source>Border weight</source>
         <translation>太さ</translation>
     </message>
@@ -209,7 +209,7 @@
         <translation>適用</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="49"/>
+        <location filename="src/mainwindow.py" line="55"/>
         <source>ActiveBook</source>
         <translation>現在のシート＆ブック</translation>
     </message>
@@ -219,72 +219,72 @@
         <translation>スタイル (&amp;S)</translation>
     </message>
     <message>
-        <location filename="src/ui/mainwindow.ui" line="122"/>
+        <location filename="src/ui/mainwindow.ui" line="125"/>
         <source>New</source>
         <translation>新規</translation>
     </message>
     <message>
-        <location filename="src/ui/mainwindow.ui" line="127"/>
+        <location filename="src/ui/mainwindow.ui" line="130"/>
         <source>Up</source>
         <translation>上げる</translation>
     </message>
     <message>
-        <location filename="src/ui/mainwindow.ui" line="132"/>
+        <location filename="src/ui/mainwindow.ui" line="135"/>
         <source>Down</source>
         <translation>下げる</translation>
     </message>
     <message>
-        <location filename="src/ui/mainwindow.ui" line="137"/>
+        <location filename="src/ui/mainwindow.ui" line="140"/>
         <source>Remove</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="49"/>
+        <location filename="src/mainwindow.py" line="55"/>
         <source>ActiveSheet</source>
         <translation>現在のシート</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="53"/>
+        <location filename="src/mainwindow.py" line="59"/>
         <source>All Chart</source>
         <translation>全てのグラフ</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="53"/>
+        <location filename="src/mainwindow.py" line="59"/>
         <source>Type of ActiveChart</source>
         <translation>現在のグラフタイプ</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="86"/>
+        <location filename="src/mainwindow.py" line="92"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="86"/>
+        <location filename="src/mainwindow.py" line="92"/>
         <source>Chart is not active currently.</source>
         <translation>グラフが選択されていません。</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="133"/>
+        <location filename="src/mainwindow.py" line="160"/>
         <source>Collect error</source>
         <translation>収集エラー</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="133"/>
+        <location filename="src/mainwindow.py" line="160"/>
         <source>Failed collecting from the ActiveChart.</source>
         <translation>現在のグラフからのスタイル収集に失敗しました。</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="202"/>
+        <location filename="src/mainwindow.py" line="228"/>
         <source>Apply error</source>
         <translation>適用エラー</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="196"/>
+        <location filename="src/mainwindow.py" line="222"/>
         <source>Failed applied in the ActiveChart.</source>
         <translation>現在のグラフに適用できませんでした。</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="202"/>
+        <location filename="src/mainwindow.py" line="228"/>
         <source>Failed applied.</source>
         <translation>適用に失敗しました。</translation>
     </message>
@@ -294,14 +294,39 @@
         <translation>エクセルスポイトツール</translation>
     </message>
     <message>
-        <location filename="src/ui/mainwindow.ui" line="142"/>
+        <location filename="src/ui/mainwindow.ui" line="145"/>
         <source>Replicate</source>
         <translation>複製</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.py" line="37"/>
+        <location filename="src/mainwindow.py" line="43"/>
         <source>Excel isn&apos;t installed.</source>
         <translation>Excelが呼び出せません。</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwindow.ui" line="150"/>
+        <source>Load</source>
+        <translation>読み込み</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwindow.ui" line="155"/>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="src/mainwindow.py" line="38"/>
+        <source>ChartPattern (*.chartpattern)</source>
+        <translation>グラフパターン (*.chartpattern)</translation>
+    </message>
+    <message>
+        <location filename="src/mainwindow.py" line="138"/>
+        <source>Load error</source>
+        <translation>読み込み失敗</translation>
+    </message>
+    <message>
+        <location filename="src/mainwindow.py" line="138"/>
+        <source>Failed to load the chart pattern.</source>
+        <translation>グラフパターンの読み込みに失敗しました。</translation>
     </message>
 </context>
 </TS>
