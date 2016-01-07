@@ -146,14 +146,14 @@ class ChartStyleModel(abstract.AbstractItemModel):
                     self._styles[index.row()].dash = 1
                 else:
                     self._styles[index.row()].style = {
-                        1: 1,
-                        2: -4118,
-                        3: -4118,
-                        4: -4115,
-                        5: 4,
-                        6: 5,
-                        7: -4115,
-                        8: 4,
+                        1: 1,     # Solid
+                        2: -4118, # SquareDot
+                        3: -4118, # RoundDot
+                        4: -4115, # LineDash
+                        5: 4,     # DashDot
+                        6: 5,     # DashDotDot
+                        7: -4115, # LongDash
+                        8: 4,     # LongDashDot
                     }[value]
                     self._styles[index.row()].dash = value
             elif index.column() == 4:
