@@ -12,6 +12,9 @@ POINTS_TYPE = [
     win32com.client.constants.xlPie,
     win32com.client.constants.xlPieExploded,
     win32com.client.constants.xlPieOfPie,
+    # doughnut charts
+    win32com.client.constants.xlDoughnut,
+    win32com.client.constants.xlDoughnutExploded,
 ]
 
 class Style(object):
@@ -26,6 +29,7 @@ class Style(object):
         self.line = line  # Line style
         self.color = color
         self.weight = weight
+        # TODO: marker option for LineMarkers
 
     def isFilled(self):
         return self.pattern <= 0 or self.pattern > 48
