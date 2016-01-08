@@ -133,7 +133,7 @@ class MainWindow(QMainWindow):
             return
         try:
             data = json.load(open(six.text_type(filename)))
-            self.pickedModel.setDumpData(data)
+            self.pickedModel.setStyles([utils.excel.Style.from_dump(x) for x in data])
         except:
             QMessageBox.warning(self, self.tr("Load error"),
                 self.tr("Failed to load the chart pattern."))
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         filename = self.getSaveFileName(self.chartPatternFilter)
         if not filename:
             return
-        data = self.pickedModel.dump()
+        data = [x.dump() for x in self.pickedModel.styles()]
         fp = open(six.text_type(filename), "wb")
         json.dump(data, fp, indent=1)
 
