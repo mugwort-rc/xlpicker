@@ -11,8 +11,10 @@ from PyQt4.QtGui import QPixmap
 from PyQt4.QtGui import QPainter
 from PyQt4.QtGui import QComboBox
 from PyQt4.QtGui import QItemDelegate
+from PyQt4.QtGui import QUndoStack
 
 from . import abstract
+from ..undo import ResetBlock
 from ..utils.excel import Style
 
 
@@ -26,8 +28,18 @@ class ChartStyleModel(abstract.AbstractItemModel):
         self._styles = []
         self.patternImage = QPixmap(":/img/patterns.png")
         self.setItemSize(0, 6)  # 6: Pattern, Fore, Back, LineStyle, Color, Weight
+        self._undoStack = QUndoStack()
 
     def setStyles(self, styles):
+        """
+        :type styles: list[utils.excel.Style]
+        """
+        self.beginResetModel()
+        with ResetBlock(self._undoStack, self):
+            self._setStyles(styles)
+        self.endResetModel()
+
+    def _setStyles(self, styles):
         """
         :type styles: list[utils.excel.Style]
         """
@@ -41,10 +53,24 @@ class ChartStyleModel(abstract.AbstractItemModel):
     def styles(self):
         return self._styles
 
+    def copy_styles(self):
+        return [x.copy() for x in self.styles()]
+
+    def undoStack(self):
+        return self._undoStack
+
+    def setUndoStack(self, undoStack):
+        self._undoStack = undoStack
+
     def replicate(self, index):
-        newobj = copy.deepcopy(self._styles[index])
-        self._styles.append(newobj)
-        self.setStyles(self._styles)
+        self.beginResetModel()
+        with ResetBlock(self._undoStack, self):
+            newobj = copy.deepcopy(self._styles[index])
+            self._styles.append(newobj)
+            self.setItemSize(len(self._styles),
+                             # Pattern, Fore, Back, LineStyle, Color, Weight
+                             6)
+        self.endResetModel()
 
     def flags(self, index):
         result = super(ChartStyleModel, self).flags(index)
@@ -138,49 +164,50 @@ class ChartStyleModel(abstract.AbstractItemModel):
 
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
-            if index.column() == 0:
-                if isinstance(value, QVariant):
-                    value = value.toInt()[0]
-                self._styles[index.row()].pattern = value
-            elif index.column() == 1:
-                if isinstance(value, QVariant):
-                    value = QColor(value)
-                self._styles[index.row()].fore = qcolor2rgb(value)
-            elif index.column() == 2:
-                if isinstance(value, QVariant):
-                    value = QColor(value)
-                self._styles[index.row()].back = qcolor2rgb(value)
-            elif index.column() == 3:
-                if isinstance(value, QVariant):
-                    value = value.toInt()[0]
-                if value in [0, 9]:
-                    if value == 0:
-                        self._styles[index.row()].style = -4105
-                    elif vlaue == 9:
-                        self._styles[index.row()].style = -4142
-                    self._styles[index.row()].dash = 1
-                else:
-                    self._styles[index.row()].style = {
-                        1: 1,     # Solid
-                        2: -4118, # SquareDot
-                        3: -4118, # RoundDot
-                        4: -4115, # LineDash
-                        5: 4,     # DashDot
-                        6: 5,     # DashDotDot
-                        7: -4115, # LongDash
-                        8: 4,     # LongDashDot
-                    }[value]
-                    self._styles[index.row()].dash = value
-            elif index.column() == 4:
-                if isinstance(value, QVariant):
-                    value = QColor(value)
-                self._styles[index.row()].color = qcolor2rgb(value)
-            elif index.column() == 5:
-                if isinstance(value, QVariant):
-                    value = value.toInt()[0]
-                if value == 3:
-                    value = -4138
-                self._styles[index.row()].weight = value
+            with ResetBlock(self._undoStack, self):
+                if index.column() == 0:
+                    if isinstance(value, QVariant):
+                        value = value.toInt()[0]
+                    self._styles[index.row()].pattern = value
+                elif index.column() == 1:
+                    if isinstance(value, QVariant):
+                        value = QColor(value)
+                    self._styles[index.row()].fore = qcolor2rgb(value)
+                elif index.column() == 2:
+                    if isinstance(value, QVariant):
+                        value = QColor(value)
+                    self._styles[index.row()].back = qcolor2rgb(value)
+                elif index.column() == 3:
+                    if isinstance(value, QVariant):
+                        value = value.toInt()[0]
+                    if value in [0, 9]:
+                        if value == 0:
+                            self._styles[index.row()].style = -4105
+                        elif vlaue == 9:
+                            self._styles[index.row()].style = -4142
+                        self._styles[index.row()].dash = 1
+                    else:
+                        self._styles[index.row()].style = {
+                            1: 1,     # Solid
+                            2: -4118, # SquareDot
+                            3: -4118, # RoundDot
+                            4: -4115, # LineDash
+                            5: 4,     # DashDot
+                            6: 5,     # DashDotDot
+                            7: -4115, # LongDash
+                            8: 4,     # LongDashDot
+                        }[value]
+                        self._styles[index.row()].dash = value
+                elif index.column() == 4:
+                    if isinstance(value, QVariant):
+                        value = QColor(value)
+                    self._styles[index.row()].color = qcolor2rgb(value)
+                elif index.column() == 5:
+                    if isinstance(value, QVariant):
+                        value = value.toInt()[0]
+                    if value == 3:
+                        value = -4138
+                    self._styles[index.row()].weight = value
             return True
         return False
 
@@ -203,23 +230,25 @@ class ChartStyleModel(abstract.AbstractItemModel):
 
     def insertRows(self, row, count, parent=QModelIndex()):
         self.beginInsertRows(parent, row, row+count)
-        for i in range(count):
-            style = Style.create()
-            if row == len(self._styles):
-                self._styles.append(style)
-            else:
-                self._styles.insert(row+i, style)
-        self.row.insert(row, count)
+        with ResetBlock(self._undoStack, self):
+            for i in range(count):
+                style = Style.create()
+                if row == len(self._styles):
+                    self._styles.append(style)
+                else:
+                    self._styles.insert(row+i, style)
+            self.row.insert(row, count)
         self.endInsertRows()
         return True
 
     def removeRows(self, row, count, parent=QModelIndex()):
         self.beginRemoveRows(parent, row, row+count)
-        for i in range(count):
-            if len(self._styles) <= row:
-                return False
-            del self._styles[row]
-        self.row.remove(row, count)
+        with ResetBlock(self._undoStack, self):
+            for i in range(count):
+                if len(self._styles) <= row:
+                    return False
+                del self._styles[row]
+            self.row.remove(row, count)
         self.endRemoveRows()
         return True
 
@@ -229,7 +258,8 @@ class ChartStyleModel(abstract.AbstractItemModel):
         if len(self._styles) <= row:
             return
         self.beginMoveRows(QModelIndex(), row, row, QModelIndex(), row-1)
-        self._styles.insert(row-1, self._styles.pop(row))
+        with ResetBlock(self._undoStack, self):
+            self._styles.insert(row-1, self._styles.pop(row))
         self.endMoveRows()
 
     def downRow(self, row):
@@ -237,7 +267,8 @@ class ChartStyleModel(abstract.AbstractItemModel):
             return
         if len(self._styles) <= row+1:
             return
-        self.upRow(row+1)
+        with ResetBlock(self._undoStack, self):
+            self.upRow(row+1)
 
     def parent(self, index):
         return QModelIndex()

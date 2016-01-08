@@ -16,6 +16,8 @@ from PyQt4.QtGui import QMainWindow
 from PyQt4.QtGui import QMessageBox
 from PyQt4.QtGui import QFileDialog
 from PyQt4.QtGui import QProgressBar
+from PyQt4.QtGui import QUndoStack
+from PyQt4.QtGui import QKeySequence
 import pythoncom
 import win32com.client
 
@@ -33,6 +35,17 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # undo
+        # <http://doc.qt.io/qt-5/qtwidgets-tools-undoframework-example.html>
+        self.undoStack = QUndoStack()
+        self.ui.menuStyles.addSeparator()
+        self.undoAction = self.undoStack.createUndoAction(self)
+        self.undoAction.setShortcuts(QKeySequence.Undo)
+        self.ui.menuStyles.addAction(self.undoAction)
+        self.redoAction = self.undoStack.createRedoAction(self)
+        self.redoAction.setShortcuts(QKeySequence.Redo)
+        self.ui.menuStyles.addAction(self.redoAction)
 
         # constants
         self.chartPatternFilter = self.tr("ChartPattern (*.chartpattern)")
@@ -62,6 +75,7 @@ class MainWindow(QMainWindow):
         ], self)
         self.ui.comboBoxTarget.setModel(self.targetModel)
         self.ui.comboBoxType.setModel(self.typeModel)
+        self.pickedModel.setUndoStack(self.undoStack)
 
         # general_progress
         self.general_progress = QProgressBar()
@@ -135,6 +149,7 @@ class MainWindow(QMainWindow):
             data = json.load(open(six.text_type(filename)))
             self.pickedModel.setStyles([utils.excel.Style.from_dump(x) for x in data])
         except:
+            raise
             QMessageBox.warning(self, self.tr("Load error"),
                 self.tr("Failed to load the chart pattern."))
 
