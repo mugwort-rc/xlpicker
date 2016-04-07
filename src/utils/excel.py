@@ -17,6 +17,16 @@ POINTS_TYPE = [
     win32com.client.constants.xlDoughnutExploded,
 ]
 
+LINE_TYPE = [
+    win32com.client.constants.xlLine,
+    win32com.client.constants.xlLineMarkers,
+    win32com.client.constants.xlLineMarkersStacked,
+    win32com.client.constants.xlLineMarkersStacked100,
+    win32com.client.constants.xlLineStacked,
+    win32com.client.constants.xlLineStacked100,
+]
+
+
 class Style(object):
     def __init__(self, pattern, fore, back, style, dash, line, color, weight):
         # format.fill
@@ -116,14 +126,14 @@ def _collect_style(method, prog=None):
         prog.finish()
 
 
-def apply_styles(chart, styles, prog=None):
+def apply_styles(chart, styles, prog=None, ignore_line=True):
     if chart.ChartType in POINTS_TYPE:
-        _apply_style(chart.SeriesCollection(1).Points, styles, prog=prog)
+        _apply_style(chart.SeriesCollection(1).Points, styles, prog=prog, ignore_line=ignore_line)
     else:
-        _apply_style(chart.SeriesCollection, styles, prog=prog)
+        _apply_style(chart.SeriesCollection, styles, prog=prog, ignore_line=ignore_line)
 
 
-def _apply_style(method, styles, prog=None):
+def _apply_style(method, styles, prog=None, ignore_line=True):
     maximum = min(method().Count, len(styles))
     if prog:
         prog.initialize(maximum)
@@ -132,6 +142,8 @@ def _apply_style(method, styles, prog=None):
             prog.update(i)
         style = styles[i-1]  # 0-based
         obj = method(i)
+        if obj.ChartType in LINE_TYPE:
+            continue
         # Format.Fill
         if style.isFilled():
             obj.Format.Fill.Solid()
