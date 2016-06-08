@@ -12,6 +12,12 @@ py2exe_options = {
 setup(
     options={"py2exe" : py2exe_options},
     windows=[{"script" : "main.py",
-              "dest_base": "xlpicker"}],
+              "dest_base": "xlpicker",
+              # version
+              "version": "1.4.2.0",
+              "name": "xlpicker",
+              "company_name": "LANDBRAINS",
+              "copyright": "Copyright (c) 2015-2016 landbrains.",
+              "description": "xlpicker",}],
     zipfile=None,
 )
