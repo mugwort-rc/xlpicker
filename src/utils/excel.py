@@ -142,7 +142,7 @@ def _apply_style(method, styles, prog=None, ignore_line=True):
             prog.update(i)
         style = styles[i-1]  # 0-based
         obj = method(i)
-        if obj.ChartType in LINE_TYPE:
+        if hasattr(obj, "ChartType") and obj.ChartType in LINE_TYPE:
             continue
         # Format.Fill
         if style.isFilled():
