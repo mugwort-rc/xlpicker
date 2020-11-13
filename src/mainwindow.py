@@ -159,7 +159,7 @@ class MainWindow(QMainWindow):
         if not filename:
             return
         data = [x.dump() for x in self.pickedModel.styles()]
-        fp = open(six.text_type(filename), "wb")
+        fp = open(six.text_type(filename), "w", encoding="utf-8")
         json.dump(data, fp, indent=1)
 
     @pyqtSlot()
