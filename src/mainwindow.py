@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         self.progObj.finished.connect(self.on_progress_finished)
 
     def getOpenFileName(self, filter=''):
-        return QFileDialog.getOpenFileName(self, "", "", filter)
+        return QFileDialog.getOpenFileName(self, "", "", filter)[0]
 
     def getSaveFileName(self, filter=''):
         return QFileDialog.getSaveFileName(self, "", "", filter)
@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_actionLoad_triggered(self):
-        filename = self.getOpenFileName(self.chartPatternFilter)
+        filename = self.getOpenFileName(self.chartPatternFilter)[0]
         if not filename:
             return
         try:
