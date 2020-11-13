@@ -1,4 +1,4 @@
-onn: [push]
+on: [push]
 
 jobs:
   publish:
