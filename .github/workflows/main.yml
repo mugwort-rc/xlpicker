@@ -1,0 +1,19 @@
+onn: [push]
+
+jobs:
+  publish:
+    runs-on: docker.pkg.github.com/mugwort-rc/pyinstaller-windows-for-win32/image
+    name: publish win32 exe image
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: python -m pip install -r requirements.txt
+    - name: Run pyinstaller
+      run : pyinstaller main.spec
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
+
