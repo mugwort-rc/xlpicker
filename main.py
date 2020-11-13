@@ -3,13 +3,13 @@
 
 import sys
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 from src.mainwindow import MainWindow
 
 def main(argv):
-    app = QtGui.QApplication(argv)
+    app = QtWidgets.QApplication(argv)
 
     qtTr = QtCore.QTranslator()
     if qtTr.load("qt_" + QtCore.QLocale.system().name(), ":/i18n/"):
@@ -26,4 +26,3 @@ def main(argv):
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
-

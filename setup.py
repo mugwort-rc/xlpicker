@@ -16,8 +16,7 @@ setup(
               # version
               "version": "1.4.2.0",
               "name": "xlpicker",
-              "company_name": "LANDBRAINS",
-              "copyright": "Copyright (c) 2015-2016 landbrains.",
+              "copyright": "Copyright (c) 2015-2020 mugwort_rc.",
               "description": "xlpicker",}],
     zipfile=None,
 )

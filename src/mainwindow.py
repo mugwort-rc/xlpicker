@@ -3,31 +3,31 @@
 import sys
 import json
 
-from PyQt4.QtCore import QT_VERSION_STR
+from PyQt5.QtCore import QT_VERSION_STR
 
-from PyQt4.QtCore import pyqtSlot
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QStringListModel
-from PyQt4.QtCore import QModelIndex
-from PyQt4.QtGui import QColor
-from PyQt4.QtGui import QColorDialog
-from PyQt4.QtGui import QDialog
-from PyQt4.QtGui import QMainWindow
-from PyQt4.QtGui import QMessageBox
-from PyQt4.QtGui import QFileDialog
-from PyQt4.QtGui import QProgressBar
-from PyQt4.QtGui import QUndoStack
-from PyQt4.QtGui import QKeySequence
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QStringListModel
+from PyQt5.QtCore import QModelIndex
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QUndoStack
+from PyQt5.QtGui import QKeySequence
 import pythoncom
 import win32com.client
 
 import six
 
-import models
-import utils.excel
-from utils.progress import QtProgressObject
+from . import models
+from .utils import excel
+from .utils.progress import QtProgressObject
 
-from ui.mainwindow import Ui_MainWindow
+from .ui.mainwindow import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
             return
         try:
             data = json.load(open(six.text_type(filename)))
-            self.pickedModel.setStyles([utils.excel.Style.from_dump(x) for x in data])
+            self.pickedModel.setStyles([excel.Style.from_dump(x) for x in data])
         except:
             raise
             QMessageBox.warning(self, self.tr("Load error"),
@@ -168,7 +168,7 @@ class MainWindow(QMainWindow):
             chart = self.getActiveChart()
             if chart is None:
                 return
-            styles = utils.excel.collect_styles(chart,
+            styles = excel.collect_styles(chart,
                                                 prog=self.progObj)
             self.pickedModel.setStyles(styles)
         except pythoncom.com_error:
@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
             chart = self.getActiveChart()
             if chart is None:
                 return
-            utils.excel.apply_styles(chart, styles, prog=self.progObj)
+            excel.apply_styles(chart, styles, prog=self.progObj)
         except pythoncom.com_error:
             QMessageBox.warning(self, self.tr("Apply error"),
                 self.tr("Failed applied in the ActiveChart."))
@@ -208,7 +208,7 @@ class MainWindow(QMainWindow):
             sheets = []
             # ActiveBook
             if target_mode == 0:
-                for i in utils.excel.com_range(book.Worksheets.Count):
+                for i in excel.com_range(book.Worksheets.Count):
                     sheets.append(book.Worksheets(i))
             # ActiveSheet
             elif target_mode == 1:
@@ -218,7 +218,7 @@ class MainWindow(QMainWindow):
             charts = []
             for c, sheet in enumerate(sheets, 1):
                 self.on_progress_updated(c)
-                for i in utils.excel.com_range(sheet.ChartObjects().Count):
+                for i in excel.com_range(sheet.ChartObjects().Count):
                     chart = sheet.ChartObjects(i).Chart
                     if type_filter is not None and chart.ChartType != type_filter:
                         continue
@@ -230,7 +230,7 @@ class MainWindow(QMainWindow):
                     break
                 self.general_progress.setValue(i)
                 try:
-                    utils.excel.apply_styles(chart, styles, prog=self.progObj)
+                    excel.apply_styles(chart, styles, prog=self.progObj)
                 except pythoncom.com_error:
                     chart.Parent.Activate()
                     buttons = QMessageBox.Ok | QMessageBox.Abort

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QUndoCommand
+from PyQt5.QtWidgets import QUndoCommand
 
 
 class ResetBlock:

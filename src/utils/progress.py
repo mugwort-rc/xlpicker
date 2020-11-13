@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtCore import QObject
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import QObject
 
 
 class ProgressObject(object):
