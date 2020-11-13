@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_actionLoad_triggered(self):
-        filename = self.getOpenFileName(self.chartPatternFilter)[0]
+        filename = self.getOpenFileName(self.chartPatternFilter)
         if not filename:
             return
         try:
