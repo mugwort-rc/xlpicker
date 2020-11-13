@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
         return QFileDialog.getOpenFileName(self, "", "", filter)[0]
 
     def getSaveFileName(self, filter=''):
-        return QFileDialog.getSaveFileName(self, "", "", filter)
+        return QFileDialog.getSaveFileName(self, "", "", filter)[0]
 
     def getActiveChart(self):
         ActiveChart = None
